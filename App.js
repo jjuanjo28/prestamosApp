@@ -1,20 +1,46 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Menu from "./screens/Menu"
+import React,{useState} from 'react';
+
+const Stack = createNativeStackNavigator()
 
 export default function App() {
+  const [user, setUser] = useState(null)
+  
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+
+     <Stack.Navigator>
+
+
+       <Stack.Screen
+         name = "Menu"
+         component={Menu}
+         initialParams={{ user, setUser }} // Pasa el usuario y la función para actualizarlo
+         options={{
+          title: "Mis Prestamos",
+          headerTittleAlign: "center",
+          
+          headerStyle: {
+            backgroundColor:"#fff",
+          },
+          headerTintColor: "#000",
+          headerTitleStyle:{
+            fontWeight: "bold",
+           }
+
+
+         }}
+
+       />
+
+     </Stack.Navigator>
+
+    </NavigationContainer>
+
+    
+
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
