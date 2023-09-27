@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { ButtonRed } from "./Buttons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+
 
 export function PrestamoCard() {
   let URI = "http://192.168.0.10:8100/";
@@ -12,7 +14,7 @@ export function PrestamoCard() {
   const PRESTAMO_KEY = "@prestamo:key";
   const [idPrestamo, setIdPrestamo] = useState("");
   const [prestamo, setPrestamo] = useState(null);
-
+  const user = useSelector(state => state.user)
   useEffect(() => {
     muestraPrestamoId();
     getPrestamo();
@@ -61,14 +63,11 @@ export function PrestamoCard() {
     const restponse = await axios(config);
     console.log("soy la response:",restponse)
   }
-  function borrar() {
-    console.log("Borro el prestamo")
-    borroPrestamo()
-    navigation.navigate("Prestamos");
-  }
+
 
   return (
     <View style={styles.container}>
+    <Text>{user.usuario}</Text>
       <TouchableOpacity onPress={viaja}>
         {prestamo !== null ? (
           <View>

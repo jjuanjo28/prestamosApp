@@ -2,6 +2,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Menu from "./screens/Menu"
 import React,{useState} from 'react';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './src/state/store';
 
 const Stack = createNativeStackNavigator()
 
@@ -9,6 +12,8 @@ export default function App() {
   const [user, setUser] = useState(null)
   
   return (
+    <Provider store={store}>
+    <PersistGate persistor={persistor} loading={null}>
     <NavigationContainer>
 
      <Stack.Navigator>
@@ -17,7 +22,7 @@ export default function App() {
        <Stack.Screen
          name = "Menu"
          component={Menu}
-         initialParams={{ user, setUser }} // Pasa el usuario y la función para actualizarlo
+         initialParams={{ user }} // Pasa el usuario y la función para actualizarlo
          options={{
           title: "Mis Prestamos",
           headerTittleAlign: "center",
@@ -39,7 +44,8 @@ export default function App() {
 
     </NavigationContainer>
 
-    
+    </PersistGate>
+    </Provider>
 
   );
 }

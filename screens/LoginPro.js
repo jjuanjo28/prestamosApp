@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { ButtonOrange, ButtonBlue } from "../components/Buttons";
 import { saveUser, deleteUser } from "../storage/UsuarioAsyncStorage";
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../src/actions/user";
 
 // uri de casa modificar
 let URI = "http://192.168.0.10:8100/";
@@ -18,8 +20,8 @@ let URI = "http://192.168.0.10:8100/";
 
 
 const LoginPro = ({route}) => {
-// console.log("estoy en loginPro:", route)
- 
+
+    let dispatch = useDispatch()
 
       // creo grupo de useStates para poder controlar los inputs
       const [users, setUsers] = useState([]);
@@ -27,7 +29,8 @@ const LoginPro = ({route}) => {
       const [logged, setLogged] = useState(false)
       const [userName, setUserName] = useState("");
       const [password, setPassword] = useState("");
-     
+      const newUser = useSelector(state => state.user)
+      
       useEffect(() => {
        
         getUsers()        
@@ -86,10 +89,11 @@ const LoginPro = ({route}) => {
            
             setUserLogged(test);
             saveUser(test)
-         
+            
           //  console.log("adentro del some:",userLogged)
             setLogged(true)  
-            
+            console.log("intento que sea el user:",test[0].nombre)
+            dispatch( updateUser(test[0].nombre, test[0].apellido, test[0].email, test[0].id, test[0].usuario))
             
            
             
@@ -110,7 +114,7 @@ const LoginPro = ({route}) => {
         deleteUser()
        }
 
-    
+     console.log("soy new user:",newUser)
       return (
 
         <View style={styles.principal}>
@@ -139,7 +143,8 @@ const LoginPro = ({route}) => {
           : 
           <View style={styles.container}>
            <Text> Bienvenido usuario :</Text>
-          <Text>{userLogged[0].usuario}</Text>
+           <Text>aca deberia estar el nombre:{newUser.nombre}</Text>
+          <Text>{newUser.usuario}</Text>
           <Text>Ya puedes hacer uso de la Aplicacion</Text>
           <ButtonBlue text={"LogOff"} onPress={logOff}/>
 
@@ -156,9 +161,6 @@ const styles = StyleSheet.create({
     width:220,
     height:220,
     alignItems:"center",
-    fontWeight:"bold",
-    fontSize:210,
-    color:'#61dafb',
   },
   principal:{
     alignItems:"center",
