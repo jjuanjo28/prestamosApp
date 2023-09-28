@@ -5,11 +5,11 @@ import { ButtonRed } from "./Buttons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { deletePrestamo } from "../src/actions/user";
 
-
-export function PrestamoCard() {
+export function PrestamoCard({id}) {
   let URI = "http://192.168.0.10:8100/";
-
+  const dispatch = useDispatch()
   const navigation = useNavigation();
   const PRESTAMO_KEY = "@prestamo:key";
   const [idPrestamo, setIdPrestamo] = useState("");
@@ -22,14 +22,12 @@ export function PrestamoCard() {
 
   // Para recuperar el objeto de PrestamoStorage
   useEffect(() => {
-    console.log("aca cambio el idPrestamo:", idPrestamo);
+    console.log("aca cambio el idPrestamo desde el storage:", idPrestamo);
     muestraPrestamoId();
     getPrestamo();
   }, [idPrestamo]);
 
-  useEffect(() => {
-    console.log("soy prestamo en el card:", prestamo);
-  }, [prestamo]);
+
 
   async function muestraPrestamoId() {
     await AsyncStorage.getItem(PRESTAMO_KEY).then((response) => {
@@ -61,12 +59,14 @@ export function PrestamoCard() {
       headers: {},
     };
     const restponse = await axios(config);
-    console.log("soy la response:",restponse)
+    dispatch(deletePrestamo(idPrestamo))
+    console.log("soy la response:",restponse.data)
   }
 
 
   return (
     <View style={styles.container}>
+    
     <Text>{user.usuario}</Text>
       <TouchableOpacity onPress={viaja}>
         {prestamo !== null ? (

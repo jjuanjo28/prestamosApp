@@ -18,7 +18,7 @@ export function CompPrestamo(props) {
 
   function envio() {
     savePrestamo(id);
-
+    console.log("soy el props en el componente prestamo:",props)
     navigation.navigate("Card-Screen");
   }
 

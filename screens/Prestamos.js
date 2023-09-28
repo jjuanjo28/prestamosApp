@@ -5,7 +5,8 @@ import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CompPrestamo } from "../components/CompPrestamo";
 
-
+import { useDispatch, useSelector } from "react-redux";
+import {  updateUserWhithPrestamos } from "../src/actions/user";
 
 // URI de Casa
 let URI = "http://192.168.0.10:8100/";
@@ -18,6 +19,8 @@ let URI = "http://192.168.0.10:8100/";
 
 const USUARIO_KEY = "@user:key";
 const Prestamos = () => {
+  let dispatch = useDispatch()
+  const newUser = useSelector(state => state.user)
   const [userLogged, setUserLogged] = useState(null);
   const [prestamos, setPrestamos] = useState([]);
  
@@ -28,8 +31,9 @@ const Prestamos = () => {
   muestraStorage()
   }, []);
 
+
   useEffect(() => {
-    console.log("soy userLogged aca cambie:", userLogged);
+    //console.log("soy userLogged aca cambie:", userLogged);
    //  console.log("soy el length de userLogged:", userLogged.length);
    //muestraStorage() 
    if(userLogged !== null){
@@ -46,10 +50,10 @@ const Prestamos = () => {
   }, [prestamos]);
 
   async function muestraStorage() {
-    console.log("aca segundo")
+   // console.log("aca segundo")
         
       await AsyncStorage.getItem(USUARIO_KEY).then((response) => {
-        console.log("ahora lo muestro desde Prestamos:",response)
+      //  console.log("ahora lo muestro desde Prestamos:",response)
         setUserLogged(JSON.parse(response));
       });
   
@@ -71,12 +75,15 @@ const Prestamos = () => {
     const prestamosFiltrados = filtro.filter(
       (prestamos) => prestamos.id_user === userLogged[0].id
     );
+
   
    // console.log("soy filtro: ", filtro);
   
     //console.log("soy userId:", userLogged[0].id);
     //console.log("aca deberia ser filtrado:", prestamosFiltrados);
     setPrestamos(prestamosFiltrados);
+    dispatch( updateUserWhithPrestamos(prestamosFiltrados))
+    
   
     
         
@@ -84,34 +91,46 @@ const Prestamos = () => {
       }
 
    
-   
-
+      
+      
     
-  
-    
-}
-
-
-  let muestraPrestamos = () => {
-    const baseURL = "../assets/";
-    if ( prestamos !== undefined) {
-      return prestamos.map((prestamo, index) => (
-        <View key={index}>
-          <CompPrestamo
-            nombre={prestamo.nombre}
-            fechaPrestamo={prestamo.fechaPrestamo}
-            fechaDevolucion={prestamo.fechaDevolucion}
-            telefono={prestamo.telefono}
-            foto={prestamo.foto}
-            devuelto={prestamo.devuelto}
-            id={prestamo.id}
-          />
+      
+      
+    }
+        
+    let muestraPrestamos = () => {
+      
+      if ( newUser) {
+        return Object.keys(newUser).map((key) =>{
+          const prestamo = newUser[key]
           
-        </View>
-      ));
+          if(typeof prestamo == "object" ){
+            return (
+              <View key={prestamo.id}>
+              <CompPrestamo
+                nombre={prestamo.nombre}
+                fechaPrestamo={prestamo.fechaPrestamo}
+                fechaDevolucion={prestamo.fechaDevolucion}
+                telefono={prestamo.telefono}
+                foto={prestamo.foto}
+                devuelto={prestamo.devuelto}
+                id={prestamo.id}
+              />
+              
+            </View>
+          )
+          }
+          
+        } 
+          
+          
+        
+        
+        
+      );
     }
   };
-
+  
   return (
     <View>
      <ScrollView>{muestraPrestamos()}</ScrollView>
